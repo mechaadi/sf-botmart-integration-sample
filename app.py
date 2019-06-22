@@ -8,9 +8,12 @@ LICENSE_KEY_STORE = {
     "PRIVATE_LICENSE_KEY": {
         "renewal": True,
         "discord": "DISCORD_ID",
-        "expire": "2022-01-01 00:00 UTC"
+        "expire": "2022-01-01 00:00 UTC",
+        "plan": "Lifetime"
     }
 }
+
+PLANS = ["Lifetime", "$60/6 months"]
 
 # API Key
 API_KEY = "jJz23yFoMdm87XPCXXjv9E4H22vvYJ"
@@ -61,7 +64,8 @@ def verify_endpoint():
     license_data = LICENSE_KEY_STORE[license]
     return jsonify({
         "require_renewal": license_data["renewal"],
-        "expire_datetime": license_data["expire"]
+        "expire_datetime": license_data["expire"],
+        "plan": license_data["plan"]
     }), 200
 
 
@@ -123,8 +127,24 @@ def transfer_endpoint():
 
     return jsonify({
         "discord": LICENSE_KEY_STORE[new_license]["discord"],
-        "license": new_license
+        "license": new_license,
+        "plan": LICENSE_KEY_STORE[new_license]["plan"]
     }), 200
+
+
+@app.route("/plan", methods=["GET"])
+def plan_endpoint():
+    """
+    Return list of available license plan
+
+    Input: None
+
+    :return: 200 OK
+    {
+        "plans" : ["plan1", "plan2", ...]
+    }
+    """
+    return jsonify({"plans": PLANS})
 
 
 if __name__ == "__main__":
