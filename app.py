@@ -13,6 +13,8 @@ LICENSE_KEY_STORE = {
     }
 }
 
+OTP_STORE = {}
+
 PLANS = ["Lifetime", "$60/6 months"]
 
 # API Key
@@ -145,6 +147,63 @@ def plan_endpoint():
     }
     """
     return jsonify({"plans": PLANS})
+
+
+@app.route("/gen-otp", methods=["POST"])
+def gen_otp_endpoint():
+    """
+    Generate a one time password to verify ownership of discord account
+    Input in JSON format :
+    {
+        "discord": <DISCORD_ID_STR>
+    }
+    :return: 200 OK
+    {
+        "status": "ok"
+    }
+    :return 401 Unauthorized
+    """
+    if request.headers.get("Authorization") != API_KEY:
+        return jsonify({"error": "Invalid API Key"}), 401
+
+    data = request.json
+    discord = data["discord"]
+
+    # Generate new OTP
+    otp = [choice(ascii_uppercase) for _ in range(5)]
+    otp = ''.join(otp)
+
+    OTP_STORE[discord] = otp
+
+    # Change this into a function that sends OTP to the user's discord
+    print(otp)
+
+    return jsonify({"success": True})
+
+
+@app.route("/verify-otp", methods=["POST"])
+def verify_otp_endpoint():
+    """
+    Verify a one time password pre-generated before
+    Input in JSON format :
+    {
+        "discord": <DISCORD_ID_STR>
+        "otp": <OTP_CODE_STRING>
+    }
+    :return: 200 OK
+    {
+        "is_valid": <BOOLEAN>
+    }
+    :return 401 Unauthorized
+    """
+    if request.headers.get("Authorization") != API_KEY:
+        return jsonify({"error": "Invalid API Key"}), 401
+
+    data = request.json
+    discord = data["discord"]
+    otp = data["otp"]
+
+    return jsonify({"is_valid": OTP_STORE[discord] == otp})
 
 
 if __name__ == "__main__":
