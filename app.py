@@ -168,6 +168,10 @@ def gen_otp_endpoint():
 
     data = request.json
     discord = data["discord"]
+    discords = [val["discord"] for key, val in LICENSE_KEY_STORE.items()]
+    print(discords)
+    if discord not in discords:
+        return jsonify({"error": "Invalid discord id"}), 401
 
     # Generate new OTP
     otp = [choice(ascii_uppercase) for _ in range(5)]
@@ -202,6 +206,9 @@ def verify_otp_endpoint():
     data = request.json
     discord = data["discord"]
     otp = data["otp"]
+
+    if discord not in OTP_STORE:
+        return jsonify({"error": "Invalid discord id"}), 404
 
     return jsonify({"is_valid": OTP_STORE[discord] == otp})
 
