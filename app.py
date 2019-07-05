@@ -10,6 +10,18 @@ LICENSE_KEY_STORE = {
         "discord": "DISCORD_ID",
         "expire": "2022-01-01 00:00 UTC",
         "plan": "Lifetime"
+    },
+    "PRIVATE_LICENSE_KEY_2": {
+        "renewal": True,
+        "discord": "DISCORD_ID_2",
+        "expire": "2022-01-01 00:00 UTC",
+        "plan": "Lifetime"
+    },
+    "PRIVATE_LICENSE_KEY_3": {
+        "renewal": False,
+        "discord": "DISCORD_ID_3",
+        "expire": "2020-01-01 00:00 UTC",
+        "plan": "$60/6 months"
     }
 }
 
